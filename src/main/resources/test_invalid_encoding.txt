@@ -1,0 +1,67 @@
+package org.rhc.jboss.security.oauth.as7;
+
+import org.jboss.security.SimpleGroup;
+import org.jboss.security.SimplePrincipal;
+import org.jboss.security.auth.spi.UsernamePasswordLoginModule;
+
+import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.LoginException;
+import java.security.acl.Group;
+import java.util.Map;
+
+/**
+ * Created by ajurcenk on 2/9/17.
+ */
+public class OAuthManageResourceLoginModule extends UsernamePasswordLoginModule {
+
+
+    public OAuthManageResourceLoginModule() {
+
+        System.out.println("******************* OAuthManageResourceLoginModule ****************");
+    }
+
+    @Override
+    public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {
+
+        super.initialize(subject, callbackHandler, sharedState, options);
+
+    }
+
+    @Override
+    protected boolean validatePassword(String inputPassword,
+                                       String expectedPassword) {
+        return true;
+    }
+
+
+    @Override
+    protected String getUsersPassword() throws LoginException {
+        return "bpmsuite1!";
+    }
+
+    @Override
+    protected String[] getUsernameAndPassword() {
+
+        String[] userInfo = new String[2];
+        userInfo[0] = "ajurcenk";
+        userInfo[1] = "bpmsuite1!";
+
+        return userInfo;
+    }
+
+
+    protected Group[] getRoleSets() throws LoginException {
+
+        SimpleGroup roles = new SimpleGroup("Roles");
+        String roleName = "kie-server";
+
+        roles.addMember(new SimplePrincipal(roleName));
+
+        Group[] roleSets = {roles};
+
+        return roleSets;
+    }
+
+
+}

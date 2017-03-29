@@ -1,0 +1,90 @@
+package org.rhc.jboss.security.oauth.as7;
+
+import org.jboss.security.SimpleGroup;
+import org.jboss.security.SimplePrincipal;
+import org.jboss.security.auth.spi.UsernamePasswordLoginModule;
+
+import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.LoginException;
+import java.security.acl.Group;
+import java.util.Map;
+
+/**
+ * Created by ajurcenk on 2/9/17.
+ */
+
+// TODO Check that user can be dynamic user Done
+// TODO Check how to send data from custom authenticator
+public class OAuthManageResourceLoginModule extends UsernamePasswordLoginModule {
+
+
+    public OAuthManageResourceLoginModule() {
+
+        System.out.println("******************* OAuthManageResourceLoginModule ****************");
+    }
+
+    @Override
+    public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {
+
+        super.initialize(subject, callbackHandler, sharedState, options);
+
+    }
+
+    @Override
+    protected boolean validatePassword(String inputPassword,
+                                       String expectedPassword) {
+        return true;
+    }
+
+
+    @Override
+    protected String getUsersPassword() throws LoginException {
+
+        log("Entering to getUsersPassword()");
+
+        log("Exiting from getUsersPassword()");
+
+
+        return "bpmsuite1!";
+    }
+
+    @Override
+    protected String[] getUsernameAndPassword() {
+
+        log("Entering to getUsernameAndPassword()");
+
+        String[] userInfo = new String[2];
+        userInfo[0] = "ajurcenk";
+        userInfo[1] = "bpmsuite1!";
+
+        log("Exiting from getUsernameAndPassword()");
+
+        return userInfo;
+    }
+
+
+    protected Group[] getRoleSets() throws LoginException {
+
+        log("Entering to getRoleSets()");
+
+
+        SimpleGroup roles = new SimpleGroup("Roles");
+        String roleName = "kie-server";
+
+        roles.addMember(new SimplePrincipal(roleName));
+
+        Group[] roleSets = {roles};
+
+        log("Exiting from getRoleSets()");
+
+        return roleSets;
+    }
+
+    private void log(String msg) {
+
+        System.out.println(msg);
+    }
+
+
+}

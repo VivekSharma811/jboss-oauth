@@ -1,0 +1,6 @@
+<security-domain name="oauth" cache-type="default">
+    <authentication>
+        <login-module code="org.rhc.jboss.security.oauth.as7.OAuthManageResourceLoginModule" module="org.rhc.jboss.security.oauth.as7" flag="sufficient">
+        </login-module>
+    </authentication>
+</security-domain>
