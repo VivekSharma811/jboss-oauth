@@ -33,7 +33,7 @@ public class SecurityApiClient {
     }
 
 
-        /**
+    /**
      * Gets JWT token
      * @param req - contains access token and keys
      * @return

@@ -20,7 +20,7 @@ public class GetTokenRequest extends BaseSecurityApiRequest {
         this.code = code;
     }
 
-    @JsonProperty("cleint_id")
+    @JsonProperty("client_id")
     public String getClientId() {
         return clientId;
     }
@@ -29,7 +29,7 @@ public class GetTokenRequest extends BaseSecurityApiRequest {
         this.clientId = clientId;
     }
 
-    @JsonProperty("redirect_url")
+    @JsonProperty("redirect_uri")
     public String getRedirectUrl() {
         return redirectUrl;
     }

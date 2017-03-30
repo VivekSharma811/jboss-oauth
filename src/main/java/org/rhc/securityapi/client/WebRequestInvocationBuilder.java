@@ -90,19 +90,19 @@ public class WebRequestInvocationBuilder {
 
         // api_key
         if (this.apiKey != null ) {
-            headers.put("api_key", Arrays.asList(new String[]{this.apiKey}));
+            // headers.put("api_key", Arrays.asList(new String[]{this.apiKey}));
         }
 
         // app_key
         if (this.appKey != null ) {
 
-            headers.put("app_key", Arrays.asList(new String[]{this.appKey}));
+            //headers.put("app_key", Arrays.asList(new String[]{this.appKey}));
         }
 
         // Authorization
         if (this.authToken != null ) {
 
-            headers.put("Authorization", Arrays.asList(new String[]{this.authToken}));
+            //headers.put("Authorization", Arrays.asList(new String[]{this.authToken}));
         }
 
 
