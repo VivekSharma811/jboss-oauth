@@ -608,7 +608,9 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
         final GetTokenRequest request = new GetTokenRequest();
         request.setCode(accessTokenStr);
         request.setClientId(this.clientId);
-        request.setRedirectUrl("http://localahost:8080/test");
+        request.setRedirectUrl(cfg.getRedirectUri());
+
+        // Not using in V4
         request.setApiKey("apiKey");
         request.setAppKey("appKey");
 

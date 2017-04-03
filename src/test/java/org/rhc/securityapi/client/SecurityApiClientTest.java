@@ -16,7 +16,8 @@ public class SecurityApiClientTest extends TestCase {
         String baseUrl = "https://dev.servsmartapi.com/";
         String apiVersion = "V4";
         String authToken = "aothTOken";
-        final SecurityApiClientConfig cfg = new SecurityApiClientConfig(baseUrl, authToken, apiVersion);
+        String redirectUri = "localhost:8080/test";
+        final SecurityApiClientConfig cfg = new SecurityApiClientConfig(baseUrl, authToken, apiVersion, redirectUri);
 
 
         final String code = "AAAAAAAAAAAAAAAAAAAAAA.ZZNUBYt31AjKGmIo26shtcZHgZM.nJqlX-5JpKR-1PLDhyAX61gltYu0730K11RSmypGLwM1UZVVMPs7rXvFp5TWQMow8S-cM2DEFmcG0qYf_6UpwX-7rA-B54TAIWI1bSbKezsrWCDs3yVWCQT4SVmfRoqaef2clzd8GQfnrvt9vUtk16OvUYTfnty_5ekLwsm1fwkDAVYk5WaP-LZnR6UG5xHEOOhhU4g69Ds6IiIh7UpSHHoE-xkcwiF4F88fG7buwHEZQtkPuQdPBgrogpl3CTzopJARhBx4_WGK_ZLAKBP3gKHYUtUjovc-zbIluvDqM7kmGcZtOeXWkE9HfUZXCSrhJieW41ArMtzkHLRkbxJLVQ";
