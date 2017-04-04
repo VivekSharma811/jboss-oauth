@@ -11,7 +11,7 @@ public class TokenValidationResult {
     private String info = "";
 
 
-    @JsonProperty("Valid")
+    @JsonProperty("valid")
     public boolean isValid() {
         return valid;
     }
@@ -20,7 +20,7 @@ public class TokenValidationResult {
         this.valid = valid;
     }
 
-    @JsonProperty("Info")
+    @JsonProperty("info")
     public String getInfo() {
         return info;
     }

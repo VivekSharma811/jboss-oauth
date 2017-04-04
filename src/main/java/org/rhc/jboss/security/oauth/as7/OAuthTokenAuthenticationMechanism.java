@@ -11,6 +11,7 @@ import io.undertow.server.handlers.form.FormParserFactory;
 import io.undertow.util.HttpString;
 import org.apache.commons.codec.binary.StringUtils;
 import org.jboss.security.SimplePrincipal;
+import org.rhc.securityapi.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,8 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
     private final String mechanismName;
     private final List<HttpString> identityHeaders;
 
+    private final SecurityApiClient apiClient;
+
 
     private OAuthTokenAuthenticationMechanism(String mechanismName, List<HttpString> identityHeaders) {
 
@@ -44,10 +47,13 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
         this.mechanismName = mechanismName;
         this.identityHeaders = identityHeaders;
 
+
+        final SecurityApiClientConfig cfg = SecurityApiClientConfigFactory.getInstance().createConfig();
+        apiClient = new SecurityApiClient(cfg);
+
         LOG.debug("Exiting from OAuthTokenAuthenticationMechanism()");
 
     }
-
 
 
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange exchange, SecurityContext securityContext) {
@@ -59,12 +65,28 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
 
         final String authHeader = this.getAuthHeader(exchange);
 
-        if (authHeader == null ) {
+        if (authHeader == null) {
 
             LOG.warn("Authentication header is not found in the request");
 
             return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
 
+        }
+
+
+        // Validate token
+        LOG.debug("Authentication header is found in the request. Validating token");
+
+        final TokenValidationResult tokenValidationResult = this.validateToken(authHeader);
+
+        LOG.debug("Token validation result:" + tokenValidationResult);
+
+
+        if (!tokenValidationResult.isValid()) {
+
+            LOG.warn("Token is not valid.");
+
+            return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
         }
 
 
@@ -77,8 +99,7 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
 
             final OAuthTokenService tokenSvc = OAuthTokenServiceFactory.getFactory().getService();
             token = tokenSvc.decodeToken(authHeader);
-        }
-        catch (OAuthTokenDecodeException decodeEx) {
+        } catch (OAuthTokenDecodeException decodeEx) {
 
 
             LOG.warn("Error occurred during token decoding", decodeEx);
@@ -90,7 +111,7 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
         LOG.debug("Auth. token is created.");
 
         // Convert user groups to string representation
-        String rolesStr = token.getGroups() == null ? "" :  String.join("^", token.getGroups());
+        String rolesStr = token.getGroups() == null ? "" : String.join("^", token.getGroups());
 
         LOG.debug("Verify account");
 
@@ -98,7 +119,7 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
 
         IdentityManager identityManager = securityContext.getIdentityManager();
 
-        Account account = identityManager.verify(new AccountImpl(principal, Collections.<String>emptySet(),rolesStr));
+        Account account = identityManager.verify(new AccountImpl(principal, Collections.<String>emptySet(), rolesStr));
 
         if (account == null) {
 
@@ -141,12 +162,10 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
 
             String identityHeaderNames = (String) properties.get(IDENTITY_HEADER);
 
-            if(identityHeaderNames == null || identityHeaderNames.isEmpty()) {
+            if (identityHeaderNames == null || identityHeaderNames.isEmpty()) {
 
                 throw UndertowMessages.MESSAGES.authenticationPropertyNotSet(mechanismName, IDENTITY_HEADER);
-            }
-
-            else {
+            } else {
 
                 LOG.debug("Configuration parameter: " + IDENTITY_HEADER + " = " + identityHeaderNames);
 
@@ -155,7 +174,7 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
 
                 String[] headers = identityHeaderNames.split(",");
 
-                for (String header: headers) {
+                for (String header : headers) {
 
                     identityHttpStr.add(new HttpString(header));
                 }
@@ -165,7 +184,6 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
 
                 return new OAuthTokenAuthenticationMechanism(mechanismName, identityHttpStr);
             }
-
 
 
         }
@@ -185,7 +203,7 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
         String res;
         do {
 
-            if(!iter.hasNext()) {
+            if (!iter.hasNext()) {
 
                 return null;
             }
@@ -194,10 +212,39 @@ public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanis
 
             res = exchange.getRequestHeaders().getFirst(header);
 
-        } while(res == null);
+        } while (res == null);
 
 
         return res;
+    }
+
+
+    /**
+     * Validates token
+     *
+     * @param token
+     * @return
+     */
+    private TokenValidationResult validateToken(final String token) {
+
+
+        LOG.debug("Entering validateToken().");
+
+        // Create request
+        final ValidateTokenRequest request = new ValidateTokenRequest();
+
+        request.setToken(token);
+        request.setApiKey("apiKey");
+        request.setAppKey("appKey");
+
+        // Validate token
+        final TokenValidationResult tokenValidationResult = apiClient.validateToken(request);
+
+
+        LOG.debug("Exiting from validateToken().");
+
+        return tokenValidationResult;
+
     }
 
 

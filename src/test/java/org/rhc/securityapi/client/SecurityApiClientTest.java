@@ -78,11 +78,9 @@ public class SecurityApiClientTest extends TestCase {
         // Create request
         final ValidateTokenRequest request = new ValidateTokenRequest();
 
-        request.setToken("token to validate");
-        request.setApiKey("apiKey");
-        request.setAppKey("appKey");
+        request.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkF1ZHBIa0tnS2lhZ3Q2U0pxajdVcjFRX3M5USJ9.eyJhdWQiOiJodHRwOi8vMTAuNTIuMzYuMjA6ODA4MC9idXNpbmVzcy1jZW50cmFsIiwiaXNzIjoiaHR0cDovL2FkZnMuc2VydmljZW1hc3Rlci5jb20vYWRmcy9zZXJ2aWNlcy90cnVzdCIsImlhdCI6MTQ5MTI1MzQ1MSwiZXhwIjoxNDkxMjU3MDUxLCJ3aW5hY2NvdW50bmFtZSI6Im5iYWxraXNzIiwiZ3JvdXAiOlsiRG9tYWluIFVzZXJzIiwiQXBwRHluYW1pY3NfQ3VzdG9tX0Rhc2hib2FyZF9WaWV3ZXIiLCJBcHBEeW5hbWljc19EQl9Nb25pdG9yaW5nX1VzZXIiLCJBcHBEeW5hbWljc19TZXJ2ZXJfTW9uaXRvcmluZ19Vc2VyIiwiQXBwRHluYW1pY3NfUmVhZF9Pbmx5X1VzZXIiXSwiYXV0aF90aW1lIjoiMjAxNy0wNC0wM1QxODozMjoyNi44MTJaIiwiYXV0aG1ldGhvZCI6InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphYzpjbGFzc2VzOlBhc3N3b3JkUHJvdGVjdGVkVHJhbnNwb3J0IiwidmVyIjoiMS4wIiwiYXBwaWQiOiJidXNpbmVzc19jZW50cmFsIn0.ZQwIEsk6KQt_nUfbqQDYGCU_0AidskSu3BepxUH0goZ9IDXp2C1CdpzyDefL8f9O6cBmuh8c77sSaPKeQ-SoZz52Be_uWhUIJu6nZsxkBLMbrZ84Kh0z_FmdcsgjllwURXIl57pctk41D9ubXaJ0Q34wUHG5p-Z8U-fXBvo-CP3qs0HQ_xkwiwMH8OlvF9ITeJ1AW-dZuZHbDY9tI02YvH-vB4lz9Ip6atjWJRadNAhUQ7TNx0YAVGCsnTPqwFoZd1x5Xj2MQ0vt0ytBqAHbGFMJFgRGwRpf7MdiTC2LG2xAMEfHmxWJZxRx4ujrZQm8KHPJdyL__5eY7JPcWRTRrA");
 
-        // Validate token
+        // validate token
         final TokenValidationResult tokenValidationResult =  apiClient.validateToken(request);
 
         assertNotNull(tokenValidationResult);

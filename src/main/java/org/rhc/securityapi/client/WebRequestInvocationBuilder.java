@@ -102,9 +102,8 @@ public class WebRequestInvocationBuilder {
         // Authorization
         if (this.authToken != null ) {
 
-            //headers.put("Authorization", Arrays.asList(new String[]{this.authToken}));
+            headers.put("Authorization", Arrays.asList(new String[]{this.authToken}));
         }
-
 
         return target.request().headers(headers).buildPost(this.entity);
 

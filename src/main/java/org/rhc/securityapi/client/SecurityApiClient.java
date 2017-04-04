@@ -114,9 +114,12 @@ public class SecurityApiClient {
 
         // Create invocation object
         WebRequestInvocationBuilder invocationBuilder = WebRequestInvocationBuilder.create(serviceUrl);
+
+        invocationBuilder.addAuthToken(req.getToken());
+
+        // Not needed
         invocationBuilder.addApiKey(req.getApiKey());
         invocationBuilder.addAppKey(req.getAppKey());
-        invocationBuilder.addAuthToken(req.getToken());
 
         invocationBuilder.addEntity(Entity.entity(req, MediaType.APPLICATION_JSON));
 
