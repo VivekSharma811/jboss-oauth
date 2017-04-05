@@ -34,10 +34,17 @@ public class CustomSessionManager extends InMemorySessionManager {
 
                 // Get Session
                 final Session session = this.getSession(seesionId);
+                if (session != null) {
 
-                final String jwtToken = session.getAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN).toString();
+                    if (session.getAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN) != null) {
 
-                System.out.println("jwtToken: " + jwtToken);
+                        final String jwtToken = session.getAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN).toString();
+
+                        System.out.println("jwtToken: " + jwtToken);
+
+                    }
+                }
+
             }
 
             return;
