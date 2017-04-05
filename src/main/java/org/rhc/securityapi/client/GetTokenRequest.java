@@ -44,7 +44,7 @@ public class GetTokenRequest extends BaseSecurityApiRequest {
         return "GetTokenRequest{" +
                 "code='" + code + '\'' +
                 ", clientId='" + clientId + '\'' +
-                ", redirectUrl='" + redirectUrl + '\'' +
+                ", redirectUri='" + redirectUrl + '\'' +
                 ", apiKey='" + this.getApiKey() + '\'' +
                 ", appKey='" + this.getAppKey() + '\'' +
                 '}';
