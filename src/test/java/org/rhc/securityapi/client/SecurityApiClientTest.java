@@ -16,8 +16,8 @@ public class SecurityApiClientTest extends TestCase {
         String baseUrl = "https://dev.servsmartapi.com/";
         String apiVersion = "V4";
         String authToken = "aothTOken";
-        String redirectUri = "localhost:8080/test";
-        final SecurityApiClientConfig cfg = new SecurityApiClientConfig(baseUrl, authToken, apiVersion, redirectUri);
+        String redirectUrl = "";
+        final SecurityApiClientConfig cfg = new SecurityApiClientConfig(baseUrl, authToken, apiVersion, redirectUrl);
 
 
         final String code = "AAAAAAAAAAAAAAAAAAAAAA.ZZNUBYt31AjKGmIo26shtcZHgZM.nJqlX-5JpKR-1PLDhyAX61gltYu0730K11RSmypGLwM1UZVVMPs7rXvFp5TWQMow8S-cM2DEFmcG0qYf_6UpwX-7rA-B54TAIWI1bSbKezsrWCDs3yVWCQT4SVmfRoqaef2clzd8GQfnrvt9vUtk16OvUYTfnty_5ekLwsm1fwkDAVYk5WaP-LZnR6UG5xHEOOhhU4g69Ds6IiIh7UpSHHoE-xkcwiF4F88fG7buwHEZQtkPuQdPBgrogpl3CTzopJARhBx4_WGK_ZLAKBP3gKHYUtUjovc-zbIluvDqM7kmGcZtOeXWkE9HfUZXCSrhJieW41ArMtzkHLRkbxJLVQ";
@@ -32,7 +32,7 @@ public class SecurityApiClientTest extends TestCase {
         request.setAppKey("appKey");
 
         // Get token
-        final AdfsToken token =  apiClient.getToken(request);
+       final AdfsToken token =  apiClient.getToken(request);
 
         assertNotNull(token);
 
@@ -71,6 +71,8 @@ public class SecurityApiClientTest extends TestCase {
     @Test
     public void testValidateTokenOk() throws Exception{
 
+        final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkF1ZHBIa0tnS2lhZ3Q2U0pxajdVcjFRX3M5USJ9.eyJhdWQiOiJodHRwOi8vMTAuNTIuMzYuMjA6ODA4MC9idXNpbmVzcy1jZW50cmFsIiwiaXNzIjoiaHR0cDovL2FkZnMuc2VydmljZW1hc3Rlci5jb20vYWRmcy9zZXJ2aWNlcy90cnVzdCIsImlhdCI6MTQ5MDg5MTAzMywiZXhwIjoxNDkwODk0NjMzLCJ3aW5hY2NvdW50bmFtZSI6ImFqdXJjZW5rIiwiZ3JvdXAiOlsiRG9tYWluIFVzZXJzIiwiQXBwRHluYW1pY3NfQ3VzdG9tX0Rhc2hib2FyZF9WaWV3ZXIiLCJBcHBEeW5hbWljc19EQl9Nb25pdG9yaW5nX1VzZXIiLCJBcHBEeW5hbWljc19TZXJ2ZXJfTW9uaXRvcmluZ19Vc2VyIiwiQXBwRHluYW1pY3NfUmVhZF9Pbmx5X1VzZXIiXSwiYXV0aF90aW1lIjoiMjAxNy0wMy0zMFQxNjoyMzo1My4wODlaIiwiYXV0aG1ldGhvZCI6InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphYzpjbGFzc2VzOlBhc3N3b3JkUHJvdGVjdGVkVHJhbnNwb3J0IiwidmVyIjoiMS4wIiwiYXBwaWQiOiJidXNpbmVzc19jZW50cmFsIn0.JkebdsNaoCo1ZXep3ncO704c2spc1MK33aDEimcAugBOWW0ODmK2aZvlfUi9aAzjZ-0b2jwrPyG5c-f_qldw9tTffQyULqRMBS0AlsIz9LzKaDNWyLJr51SmQyAXnExOQUpevfTVpf5rqfXjsIyxQugmJRr5rwBkWWD7tn36aQpaxMXqydPhrvdWh-3-KQwuW7AmRkCu3orWLILwY6GXv8EeT9DKqDZ7amaDvE-Dk-RLthKozjEoaT_K5pui-PLq0NXYF2SMq6ICYVwlvwllPPTCfomJFjCEQ_dCps0UKU-GmjAPZRoRyXas55IOew-ow3KOqzQczyYg2FHkwBKFEQ";
+
         // Create configuration
         final SecurityApiClientConfig cfg = SecurityApiClientConfigFactory.getInstance().createConfig();
         final SecurityApiClient apiClient = new SecurityApiClient(cfg);
@@ -78,9 +80,11 @@ public class SecurityApiClientTest extends TestCase {
         // Create request
         final ValidateTokenRequest request = new ValidateTokenRequest();
 
-        request.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkF1ZHBIa0tnS2lhZ3Q2U0pxajdVcjFRX3M5USJ9.eyJhdWQiOiJodHRwOi8vMTAuNTIuMzYuMjA6ODA4MC9idXNpbmVzcy1jZW50cmFsIiwiaXNzIjoiaHR0cDovL2FkZnMuc2VydmljZW1hc3Rlci5jb20vYWRmcy9zZXJ2aWNlcy90cnVzdCIsImlhdCI6MTQ5MTI1MzQ1MSwiZXhwIjoxNDkxMjU3MDUxLCJ3aW5hY2NvdW50bmFtZSI6Im5iYWxraXNzIiwiZ3JvdXAiOlsiRG9tYWluIFVzZXJzIiwiQXBwRHluYW1pY3NfQ3VzdG9tX0Rhc2hib2FyZF9WaWV3ZXIiLCJBcHBEeW5hbWljc19EQl9Nb25pdG9yaW5nX1VzZXIiLCJBcHBEeW5hbWljc19TZXJ2ZXJfTW9uaXRvcmluZ19Vc2VyIiwiQXBwRHluYW1pY3NfUmVhZF9Pbmx5X1VzZXIiXSwiYXV0aF90aW1lIjoiMjAxNy0wNC0wM1QxODozMjoyNi44MTJaIiwiYXV0aG1ldGhvZCI6InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphYzpjbGFzc2VzOlBhc3N3b3JkUHJvdGVjdGVkVHJhbnNwb3J0IiwidmVyIjoiMS4wIiwiYXBwaWQiOiJidXNpbmVzc19jZW50cmFsIn0.ZQwIEsk6KQt_nUfbqQDYGCU_0AidskSu3BepxUH0goZ9IDXp2C1CdpzyDefL8f9O6cBmuh8c77sSaPKeQ-SoZz52Be_uWhUIJu6nZsxkBLMbrZ84Kh0z_FmdcsgjllwURXIl57pctk41D9ubXaJ0Q34wUHG5p-Z8U-fXBvo-CP3qs0HQ_xkwiwMH8OlvF9ITeJ1AW-dZuZHbDY9tI02YvH-vB4lz9Ip6atjWJRadNAhUQ7TNx0YAVGCsnTPqwFoZd1x5Xj2MQ0vt0ytBqAHbGFMJFgRGwRpf7MdiTC2LG2xAMEfHmxWJZxRx4ujrZQm8KHPJdyL__5eY7JPcWRTRrA");
+        request.setToken(token);
+        request.setApiKey("apiKey");
+        request.setAppKey("appKey");
 
-        // validate token
+        // Validate token
         final TokenValidationResult tokenValidationResult =  apiClient.validateToken(request);
 
         assertNotNull(tokenValidationResult);

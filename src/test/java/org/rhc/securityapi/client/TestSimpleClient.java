@@ -37,7 +37,7 @@ public class TestSimpleClient extends TestCase {
         invocationBuilder.addAuthToken("auttoken");
         invocationBuilder.addEntity(Entity.entity(req, MediaType.APPLICATION_JSON));
 
-        // Send posr
+        // Execute post
         final Response resp = invocationBuilder.buildPost().invoke();
 
 
