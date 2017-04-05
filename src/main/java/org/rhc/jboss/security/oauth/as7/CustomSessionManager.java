@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class CustomSessionManager extends InMemorySessionManager {
 
+    public static final String SSO_SESSION_ATTRIBUTE_JWT_TOKEN = "jwt";
+
     public CustomSessionManager(String deploymentName, int maxSessions, boolean expireOldestUnusedSessionOnMax) {
 
         super(deploymentName, 10000, expireOldestUnusedSessionOnMax);
@@ -27,7 +29,15 @@ public class CustomSessionManager extends InMemorySessionManager {
             for (String seesionId : sessions
                     ) {
 
+
                 System.out.println("Active session: " + seesionId);
+
+                // Get Session
+                final Session session = this.getSession(seesionId);
+
+                final String jwtToken = session.getAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN).toString();
+
+                System.out.println("jwtToken: " + jwtToken);
             }
 
             return;
@@ -35,16 +45,9 @@ public class CustomSessionManager extends InMemorySessionManager {
 
         int initialDelay = 0;
         int period = 3;
+
         executor.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
-    }
-
-    @Override
-    public Session getSession(String sessionId) {
-
-        System.out.println("******** CustomSessionManager");
-
-        return super.getSession(sessionId);
     }
 
 
