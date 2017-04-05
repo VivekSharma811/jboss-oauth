@@ -457,6 +457,10 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
 
         // Create new session
         final HttpSession session = servletRequestContext.getCurrentServletContext().getSession(exchange, true);
+
+        // TODO Added to default session
+        session.setAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN, tokenStr);
+
         final HttpSessionWrapper httpSessionWrapper = new HttpSessionWrapper(session);
 
 
