@@ -33,7 +33,7 @@ public class SecurityApiClient {
     }
 
 
-    /**
+        /**
      * Gets JWT token
      * @param req - contains access token and keys
      * @return
@@ -53,7 +53,9 @@ public class SecurityApiClient {
         WebRequestInvocationBuilder invocationBuilder = WebRequestInvocationBuilder.create(serviceUrl);
         invocationBuilder.addApiKey(req.getApiKey());
         invocationBuilder.addAppKey(req.getAppKey());
-        invocationBuilder.addAuthToken(this.cfg.getAuthToken());
+
+        // Skip authorization token
+        invocationBuilder.addAuthToken(null);
 
         invocationBuilder.addEntity(Entity.entity(req, MediaType.APPLICATION_JSON));
 
@@ -114,14 +116,12 @@ public class SecurityApiClient {
 
         // Create invocation object
         WebRequestInvocationBuilder invocationBuilder = WebRequestInvocationBuilder.create(serviceUrl);
-
-        invocationBuilder.addAuthToken(req.getToken());
-
-        // Not needed
         invocationBuilder.addApiKey(req.getApiKey());
         invocationBuilder.addAppKey(req.getAppKey());
+        invocationBuilder.addAuthToken(req.getToken());
 
-        invocationBuilder.addEntity(Entity.entity(req, MediaType.APPLICATION_JSON));
+        // No request data
+        //invocationBuilder.addEntity(Entity.entity(req, MediaType.APPLICATION_JSON));
 
         LOG.debug("Sending POST request to url: {}", serviceUrl);
 
@@ -137,7 +137,8 @@ public class SecurityApiClient {
 
             if (response.getStatus() != HTTP_STATUS_OK) {
 
-                LOG.warn("Error occurred getting token. Status code: {} Response: {}", response.getStatus(), response.readEntity(String.class));
+                LOG.warn("Error occurred getting token. Status code: {} Response: {}", response.getStatus(),
+                        response.readEntity(String.class));
 
                 throw new SecurityApiException("Error occurred getting token. See error log for details.");
             }

@@ -90,7 +90,7 @@ public class WebRequestInvocationBuilder {
 
         // api_key
         if (this.apiKey != null ) {
-            // headers.put("api_key", Arrays.asList(new String[]{this.apiKey}));
+           // headers.put("api_key", Arrays.asList(new String[]{this.apiKey}));
         }
 
         // app_key
@@ -104,6 +104,7 @@ public class WebRequestInvocationBuilder {
 
             headers.put("Authorization", Arrays.asList(new String[]{this.authToken}));
         }
+
 
         return target.request().headers(headers).buildPost(this.entity);
 

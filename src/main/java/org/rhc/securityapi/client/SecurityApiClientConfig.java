@@ -8,23 +8,31 @@ public class SecurityApiClientConfig {
     private String baseUrl;
     private String authToken;
     private String apiVersion;
-    private String redirectUri;
+    private String redirectUrl;
 
-    public String getBaseUrl() { return baseUrl; }
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 
-    public String getAuthToken() { return authToken; }
+    public String getAuthToken() {
+        return authToken;
+    }
 
-    public String getApiVersion() { return apiVersion; }
+    public String getApiVersion() {
+        return apiVersion;
+    }
 
-    public String getRedirectUri() { return redirectUri; }
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
 
-    public SecurityApiClientConfig(String baseUrl, String authToken, String apiVersion, String redirectUri) {
+
+    public SecurityApiClientConfig(String baseUrl, String authToken, String apiVersion, String redirectUrl) {
 
         this.baseUrl = baseUrl;
         this.authToken = authToken;
         this.apiVersion = apiVersion;
-        this.redirectUri = redirectUri;
-
+        this.redirectUrl = redirectUrl;
     }
 
 }

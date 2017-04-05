@@ -21,10 +21,11 @@ public class SecurityApiClientConfigFactory {
     protected static final String SECURITY_API_CLIENT_PROP_NAME = "org.rhc.securityapi.client.config.location";
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityApiClientConfigFactory.class);
-    public static final String PROP_BASE_URL = "baseUrl";
+    public static final String PORP_BASE_URL = "baseUrl";
     public static final String PROP_AUTH_TOKEN = "authToken";
     public static final String PROP_API_VERSION = "apiVersion";
-    public static final String PROP_REDIRECT_URI = "redirectUri";
+    public static final String PROP_REDIRECT_URL = "redirectUrl";
+
 
 
     private SecurityApiClientConfigFactory() {
@@ -45,10 +46,10 @@ public class SecurityApiClientConfigFactory {
         final Properties configProps = readConfigProperties(propertiesLocation, DEFAULT_CFG_PROPERTY_VALUE);
 
         // Set properties
-        final String baseUrl = configProps.getProperty(PROP_BASE_URL);
+        final String baseUrl = configProps.getProperty(PORP_BASE_URL);
         final String authToken = configProps.getProperty(PROP_AUTH_TOKEN);
         final String apiVersion = configProps.getProperty(PROP_API_VERSION);
-        final String redirectUrl = configProps.getProperty(PROP_REDIRECT_URI);
+        final String redirectUrl = configProps.getProperty(PROP_REDIRECT_URL);
 
         // TODO Add property values check
 
