@@ -41,6 +41,8 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
     public static final String REQ_PARAM_STATE = "state";
     public static final String UTF_8 = "UTF-8";
     public static final String SSO_SESSION_ATTRIBUTE = "SSOID";
+    public static final String SSO_SESSION_ATTRIBUTE_JWT_TOKEN = "jwt";
+
 
 
     private String mechanismName;
@@ -462,7 +464,7 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
         final SingleSignOn sso = this.ssoSessionManager.createSingleSignOn(account, this.mechanismName);
 
         // Register sso session
-        this.registerSessionIfRequired(sso, httpSessionWrapper);
+        this.registerSessionIfRequired(sso, httpSessionWrapper, tokenStr);
 
 
         LOG.debug("Exiting from handleTokenValidationRequest()");
@@ -477,7 +479,7 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
      * @param sso
      * @param session
      */
-    private void registerSessionIfRequired(SingleSignOn sso, Session session) {
+    private void registerSessionIfRequired(SingleSignOn sso, Session session, final String jwtToken) {
 
 
         LOG.debug("Entering to registerSessionIfRequired()");
@@ -494,6 +496,13 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
             LOG.debug("SSO Session attribute is added to session.");
 
             session.setAttribute(SSO_SESSION_ATTRIBUTE, sso.getId());
+        }
+
+        if (session.getAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN) == null) {
+
+            LOG.debug("JWT Session attribute is added to session.");
+
+            session.setAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN, jwtToken);
         }
 
         LOG.debug("Exiting from registerSessionIfRequired()");
@@ -549,8 +558,33 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
             return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
         }
 
-        // TODO Add token validation
 
+        if (currentSession.getAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN) == null) {
+
+            LOG.debug("JWT token session attribute is not set.");
+
+            LOG.debug("Exiting from validateSession()");
+
+            return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
+
+        }
+
+        final String jwtToken = currentSession.getAttribute(SSO_SESSION_ATTRIBUTE_JWT_TOKEN).toString();
+
+        LOG.debug("Validating JWT token");
+
+        final TokenValidationResult tokenValidationRes = this.validateJwtToken(jwtToken);
+
+        LOG.debug("JWT token validation result {}", tokenValidationRes);
+
+
+        if (!tokenValidationRes.isValid()) {
+
+            LOG.warn("JWT tokrn is not valid");
+            LOG.debug("Exiting from validateSession()");
+
+            return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
+        }
 
 
         // Complete authentication
@@ -580,7 +614,7 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
     }
 
 
-    /**
+    /**x
      * Sends redirect request
      * @param exchange
      * @param location
@@ -592,7 +626,7 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
 
     /**
      * Gets JWT token
-     * @param tokenStr - access token
+     * @param accessTokenStr - access token
 
      */
     private AdfsToken getJwtToken(final String accessTokenStr) {
@@ -608,9 +642,8 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
         final GetTokenRequest request = new GetTokenRequest();
         request.setCode(accessTokenStr);
         request.setClientId(this.clientId);
-        request.setRedirectUrl(cfg.getRedirectUri());
 
-        // Not using in V4
+        request.setRedirectUrl(cfg.getRedirectUrl());
         request.setApiKey("apiKey");
         request.setAppKey("appKey");
 
@@ -620,6 +653,36 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
         LOG.debug("Exiting from getJwtToken(). JWT token; {}", token);
 
         return token;
+    }
+
+    /**
+     * Validates token
+     * @param jwtTokenStr
+     * @return
+     */
+    private TokenValidationResult validateJwtToken(final String jwtTokenStr) {
+
+        LOG.debug("Entering to validateJwtToken(). validateJwtToken: ");
+
+        // Create configuration
+        // TODO move to constructor
+
+        final SecurityApiClientConfig cfg = SecurityApiClientConfigFactory.getInstance().createConfig();
+        final SecurityApiClient apiClient = new SecurityApiClient(cfg);
+
+        // Create request
+        final ValidateTokenRequest request = new ValidateTokenRequest();
+        request.setToken(jwtTokenStr);
+
+        request.setApiKey("apiKey");
+        request.setAppKey("appKey");
+
+        // Get token
+        final TokenValidationResult tokenValidationResult =  apiClient.validateToken(request);
+
+        LOG.debug("Exiting from validateJwtToken().  token; {}", tokenValidationResult);
+
+        return tokenValidationResult;
     }
 
     /**

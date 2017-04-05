@@ -25,7 +25,7 @@ import java.util.*;
 
 /**
  * OAuth token authentication - checks OAuth tokens.
- *
+ * <p>
  * Created by ajurcenk on 2/13/17.
  */
 public class OAuthTokenAuthenticationMechanism implements AuthenticationMechanism {
