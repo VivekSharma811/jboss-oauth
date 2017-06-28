@@ -27,6 +27,8 @@ import org.wildfly.extension.undertow.security.sso.SingleSignOnManager;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 
 /**
@@ -42,7 +44,7 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
     public static final String UTF_8 = "UTF-8";
     public static final String SSO_SESSION_ATTRIBUTE = "SSOID";
     public static final String SSO_SESSION_ATTRIBUTE_JWT_TOKEN = "jwt";
-
+    private final Optional<String[]> regexArray;
 
 
     private String mechanismName;
@@ -111,25 +113,12 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
                                              final boolean useStateParam,
                                              final int stateExpirationTimeInSeconds,
                                              final String tokenAuthorizeUrl,
-                                             final TokenGroupsMapper groupsMapper) {
+                                             final TokenGroupsMapper groupsMapper,
+                                             final Optional<String[]> regexArray) {
 
         super(FormParserFactory.builder().build(), name, loginPage, errorPage);
 
-        // defaultPage=jboss-helloworld&checkTokenUrl=jboss-helloworld/token&resource=http://osboxes/jboss-helloworld&clientId=bc&useStateParam=true&stateExpirationTimeInSeconds=60
-
         this.cookieName = "JSESSIONID";
-
-        /*
-        this.tokenAuthorizeUrl = "http://localhost:8080/adfs/oauth2/authorize";
-        this.checkTokenUrl = "token";
-        this.resource= "http://osboxes/jboss-helloworld";
-        this.clientId = "bc";
-        this.useStateParam = true;
-        this.stateExpirationTimeInSeconds = 60;
-        this.mechanismName = "FROM";
-        this.defaultPage="business-central";*/
-
-
         this.mechanismName = name;
         this.defaultPage = defaultPage;
         this.checkTokenUrl = checkTokenUrl;
@@ -144,6 +133,8 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
 
         this.groupsMapper = groupsMapper;
 
+        this.regexArray = regexArray;
+
         // Start SSO session manager
         this.ssoSessionManager.start();
     }
@@ -153,7 +144,18 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
 
         LOG.debug("Entering to authenticate. Request URI : {}", exchange.getRequestURI());
 
-     if (exchange.getRequestURI().endsWith(this.checkTokenUrl) &&
+        boolean matches = Arrays.stream(this.regexArray.orElse(new String[0]))
+                .map(s -> exchange.getRequestURI().matches(s))
+                .filter(b -> b == true).count() > 0;
+
+        if(matches){
+
+            LOG.debug("excluding resource at {}",exchange.getRequestURI());
+
+            return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
+        }
+
+        if (exchange.getRequestURI().endsWith(this.checkTokenUrl) &&
                 exchange.getRequestMethod().equals(Methods.GET)) {
 
             LOG.debug("Token verification url is detected");
@@ -720,6 +722,31 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
             // Groups mapping
             final String groupsMappingCfg = this.getCfgParam("groupsMapping", properties, mechanismName);
 
+            // Exclusion regex patterns
+            final String exclusionsString = this.getCfgParam("exclusionPatterns", properties, mechanismName);
+            String[] regexArray =null;
+
+            if(exclusionsString!=null){
+
+                try {
+
+                    regexArray = exclusionsString.split(",");
+
+                    Arrays.stream(regexArray).map(s -> Pattern.compile(s)).count();
+
+                }
+                catch (PatternSyntaxException patternSyntaxException){
+
+                    LOG.warn("Invalid regex for 'exclusionPatterns', ignoring exclusions",patternSyntaxException);
+                }
+                catch (Exception e){
+
+                    LOG.warn("Unknown exception for 'exclusionPatterns', ignoring exclusions",e);
+                }
+            }
+
+            final Optional<String[]> regexOptArray = Optional.ofNullable(regexArray);
+
             TokenGroupsMapper groupsMapper = null;
 
             // Create groups mapper
@@ -744,7 +771,8 @@ public class CustomFormAuthenticationMechanism extends ServletFormAuthentication
                    useStateParam,
                    stateExpirationTimeInSeconds,
                    tokenAuthorizeUrl,
-                   groupsMapper);
+                   groupsMapper,
+                   regexOptArray);
 
             LOG.debug("Exiting from create. Authentication mechanism: {} is created.", mechanismName);
 
