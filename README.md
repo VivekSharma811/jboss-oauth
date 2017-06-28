@@ -145,6 +145,20 @@ org.rhc.jboss.security.oauth.as7.OAuthTokenServletExtension
 ```
 This will tell EAP to load this ServletExtension for BusinessCentral which has a method handleDeployment() which will register our OAuthTokenAuthenticationMechanism
 
+### Managing Exclusions
+By default, we are excluding the following types of resources from OAuth protection:
 
+* .png
+* .jpg
+* .svg
+* .ico
+* .css
+* maven resources (i.e. pom.xml, .jar files) (NOTE: these are protected instead by BASIC Auth)
 
-
+You can add to or change these exclusions (matching regex) in /opt/jboss-as/jboss-eap-7.0/standalone/deployments/business-central/WEB-INF/web.xml
+```
+  <login-config>
+      <auth-method><![CDATA[FORM?defaultPage=business-central&checkToke..[...]..&exclusionPatterns=.*\.png|.*\.jpg|.*\.svg|.*\.ico|.*\.css|.*maven2.*]]></auth-method>
+      [...]
+  </login-config>
+```
