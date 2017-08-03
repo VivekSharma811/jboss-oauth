@@ -20,14 +20,14 @@ public class SecurityApiClientTest extends TestCase {
         final SecurityApiClientConfig cfg = new SecurityApiClientConfig(baseUrl, authToken, apiVersion, redirectUrl);
 
 
-        final String code = "AAAAAAAAAAAAAAAAAAAAAA.ZZNUBYt31AjKGmIo26shtcZHgZM.nJqlX-5JpKR-1PLDhyAX61gltYu0730K11RSmypGLwM1UZVVMPs7rXvFp5TWQMow8S-cM2DEFmcG0qYf_6UpwX-7rA-B54TAIWI1bSbKezsrWCDs3yVWCQT4SVmfRoqaef2clzd8GQfnrvt9vUtk16OvUYTfnty_5ekLwsm1fwkDAVYk5WaP-LZnR6UG5xHEOOhhU4g69Ds6IiIh7UpSHHoE-xkcwiF4F88fG7buwHEZQtkPuQdPBgrogpl3CTzopJARhBx4_WGK_ZLAKBP3gKHYUtUjovc-zbIluvDqM7kmGcZtOeXWkE9HfUZXCSrhJieW41ArMtzkHLRkbxJLVQ";
+        final String code = "AAAAAAAAAAAAAAAAAAAAAA.lWHBdsTS1AilAZVR8ylH5-Q_JKI.c37ao8gY8_lnzrjogz59b1Lax78vj5Y94Lt2OLwm1K0nuMXvAzykITjrpP8PT5Om0x1QzS1t5fBKJFXzThnfynPJffqPeizT24Qxxnw9JjE6J70hY7t7ThnmWHwneSNesWUcFxwAdTfhEqSOYfOaAAOlxnkVCOlAMKsTkDCTSUdkEnH_QkkIrY0f-Nd5pyYn-AswJxrM51mSYjBDRvwfLiof8U6JUtsJSsQZ5AKR6LsV925vcGCVkSUXFt7o-k042nS1qLOOL-OSbMjaRQZnroWjaoZ6rajHEjePhkczYYceSuFpVO67O5H9qCF0rQwrOANu5YemavMpTU7kwxUwtw&state=e42f43d4-603f-4e60-b189-a25e3449574a";
         final SecurityApiClient apiClient = new SecurityApiClient(cfg);
 
         // Create request
         final GetTokenRequest request = new GetTokenRequest();
         request.setCode(code);
-        request.setClientId("business_central");
-        request.setRedirectUrl("http://10.52.36.20:8080/business-central");
+        request.setClientId("business_central_dev");
+        request.setRedirectUrl("https://business-central-dev.intranet.com:8443/business-central/token");
         request.setApiKey("apiKey");
         request.setAppKey("appKey");
 

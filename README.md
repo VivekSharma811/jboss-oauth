@@ -1,6 +1,6 @@
 # Configuring Business Central and KIE Server for OAuth Support
 
-This java project is an extension to Business Central and KIE Server to work with ServiceMaster's OAuth security APIs.
+This java project is an extension to Business Central and KIE Server to work with OAuth security APIs.
 
 Build the project:
 ```sh
